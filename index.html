@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi Juego de Mesa</title>
+    <style>
+        /* ... estilos anteriores ... */
+        .jugador {
+            display: none; /* Ocultamos las imágenes por defecto */
+            width: 30px;
+            height: 30px;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            border: 1px solid black;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+        }
+        
+        #contenedor-dados{
+            display: flex;
+            
+        }
+
+        #contenedor-dados div{
+            height: 30px;
+            width: 30px;
+            border: 1px solid black;
+            line-height: 12px;
+            margin: 15px;
+            padding: 10px 11px 10px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            border-radius: 10%;
+        }
+        #contenedor-dados div span{ 
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="tablero"></div>
+    <div id="contenedor-dados">
+        <div>
+            <span id="dado-1"></span>
+        </div>
+        <div>
+            <span id="dado-2"></span>
+        </div>
+    </div>
+    <button onclick="tirarDados()">Tirar Dados</button>
+    <div id="dinero">Dinero: $0</div>
+    <div id="jugador1Img">
+        <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+        <svg width="8px" height="8px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke-width="3" stroke="#000000" fill="none"><path d="M54.2,42.29,50,28.61l-.09-4.88c0-2.1-2.42-4.89-4.91-5.13a11.64,11.64,0,0,0-7.69,2,7.43,7.43,0,0,1-3.84,1.15H28.26a7.37,7.37,0,0,1-3.84-1.15,11.64,11.64,0,0,0-7.69-2c-2.5.24-4.91,3-4.91,5.13l-.1,4.88L7.54,42.29A4.14,4.14,0,0,0,9.9,47.75c2.72,1.19,5.61-.23,7.29-1.91l2.51-2.33c1.93-1.41,4.26-1,6.65-1h9c2.4,0,4.73-.45,6.66,1l2.5,2.33c1.68,1.68,4.21,3.53,7.3,1.91C53.93,46.65,55.18,44.44,54.2,42.29Z"/><rect x="42.84" y="29.29" width="3.85" height="3.85" rx="1.81" transform="translate(75.97 -13.55) rotate(90)"/><rect x="33.2" y="29.29" width="3.85" height="3.85" rx="1.81" transform="translate(66.33 -3.91) rotate(90)"/><rect x="38.02" y="34.11" width="3.85" height="3.85" rx="1.81" transform="translate(79.88 72.07) rotate(180)"/><rect x="38.02" y="24.47" width="3.85" height="3.85" rx="1.81" transform="translate(79.88 52.78) rotate(-180)"/><circle cx="20.54" cy="31.21" r="3.97"/><path d="M30.87,21.73s-.22-11.32,9.82-13.46"/></svg>
+    </div>
+    <divid="jugador2Img" >
+        <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+        <svg width="8px" height="8px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke-width="3" stroke="#000000" fill="none"><path d="M54.2,42.29,50,28.61l-.09-4.88c0-2.1-2.42-4.89-4.91-5.13a11.64,11.64,0,0,0-7.69,2,7.43,7.43,0,0,1-3.84,1.15H28.26a7.37,7.37,0,0,1-3.84-1.15,11.64,11.64,0,0,0-7.69-2c-2.5.24-4.91,3-4.91,5.13l-.1,4.88L7.54,42.29A4.14,4.14,0,0,0,9.9,47.75c2.72,1.19,5.61-.23,7.29-1.91l2.51-2.33c1.93-1.41,4.26-1,6.65-1h9c2.4,0,4.73-.45,6.66,1l2.5,2.33c1.68,1.68,4.21,3.53,7.3,1.91C53.93,46.65,55.18,44.44,54.2,42.29Z"/><rect x="42.84" y="29.29" width="3.85" height="3.85" rx="1.81" transform="translate(75.97 -13.55) rotate(90)"/><rect x="33.2" y="29.29" width="3.85" height="3.85" rx="1.81" transform="translate(66.33 -3.91) rotate(90)"/><rect x="38.02" y="34.11" width="3.85" height="3.85" rx="1.81" transform="translate(79.88 72.07) rotate(180)"/><rect x="38.02" y="24.47" width="3.85" height="3.85" rx="1.81" transform="translate(79.88 52.78) rotate(-180)"/><circle cx="20.54" cy="31.21" r="3.97"/><path d="M30.87,21.73s-.22-11.32,9.82-13.46"/></svg>
+    </div>
+</body>
+</html>
+
+<script>
+    class jugadores{
+        dinero              = 0
+        nombre              = 'juanito'
+        posicionActual      = 0
+        posicionAnterior    = 0
+        imagenJugador       = ''
+        color               = 'black'
+    }
+</script>
+
+<script id="dev-script-tablero">
+    function generarTableroNumerado(filas) {
+        let columnas = filas
+        generarTablero(filas, columnas);
+        return numerarBorde(document.getElementById('tablero'),filas, columnas);
+    }
+
+    // Función para generar el tablero
+    function generarTablero(filas, columnas) {
+        const tablero = document.getElementById('tablero');
+        let html = '<table>';
+        for (let i = 0; i < filas; i++) {
+            html += '<tr>';
+            for (let j = 0; j < columnas; j++) {
+                html += `<td>
+                            <div id="tablero-x-${i}-y-${j}"></div>
+                            <div class="jugador" data-fila="${i}" data-columna="${j}"></div>
+                        </td>`;
+            }
+            html += '</tr>';
+        }
+        html += '</table>';
+        tablero.innerHTML = html;
+    }
+
+    // ... resto del código ...
+    // Función para generar el tablero
+    function numerarBorde(tablero,filas,columnas) {
+        let celda
+        let celdas = []
+
+        let numero  = 0;
+        let fila    = columna = 0;
+
+        // Coordenadas
+        let i = j = 0
+
+        //Fila de izquierda
+        while(i<filas){
+            celda = tablero.querySelector(`#tablero-x-${filas-1-i}-y-0`);
+            i++
+            
+            if(celda){
+                celda.textContent = ++numero;
+                celdas.push({numero : `#tablero-x-${filas-1-i}-y-0` })
+            }
+            
+        }
+
+        //Columna superior
+        i = 0
+        while(i<filas){
+            celda = tablero.querySelector(`#tablero-x-0-y-${i}`);
+            i++
+            if(celda){
+                celda.textContent = ++numero;
+                celdas.push({numero : `#tablero-x-${filas-1-i}-y-0` })
+            }
+            
+        }
+
+
+        //Columna superior
+        i = 0
+        while(i<filas){
+            celda = tablero.querySelector(`#tablero-x-${i+1}-y-${filas-1}`);
+            i++
+            if(celda){
+                celda.textContent = ++numero;
+                celdas.push({numero : `#tablero-x-${filas-1-i}-y-0` })
+            }
+            
+        }
+
+        //Columna superior
+        i = 0
+        while(i<filas-1){
+            celda = tablero.querySelector(`#tablero-x-${columnas-1}-y-${filas-1-i}`);
+            i++
+            if(celda){
+                celda.textContent = ++numero;
+                celdas.push({numero : `#tablero-x-${filas-1-i}-y-${columnas-1}` })
+            }
+            
+        }
+
+        return celdas
+    }
+
+</script>
+
+<script id="dev-script-dados">
+    function tirarDados() {
+        // Lógica para simular la tirada de dados
+        const dado1 = Math.floor(Math.random() * 6) + 1;
+        const dado2 = Math.floor(Math.random() * 6) + 1;
+        const total = dado1 + dado2;
+
+        // Mostrar los puntos de los dados
+        mostrarPuntosDado(dado1, 'dado-1');
+        mostrarPuntosDado(dado2, 'dado-2');
+
+        // Actualizar la posición del jugador en el tablero
+        const nuevaPosicion = calcularNuevaPosicion(total); // Función para calcular la nueva posición
+        actualizarPosicionJugador(nuevaPosicion);
+
+    }
+
+    function mostrarPuntosDado(valor, idDado) {
+        console.log(valor)
+        const dado = document.getElementById(idDado);
+        const patronesPuntos = [
+            '●',
+            '● ●',
+            '●</br> ● </br>●',
+            '● ●</br>● ●',
+            '● ●</br>  ●</br>● ●',
+            '● ●</br>● ●</br>● ●'
+        ];
+        console.log(patronesPuntos)
+        dado.innerHTML = patronesPuntos[valor - 1];
+    }
+
+
+</script>
+
+<script id="dev-script-main">
+    
+    // Función para mostrar un jugador en un casillero
+    function mostrarJugador(fila, columna, jugador) {
+        const jugadorImg = document.getElementById(`jugador${jugador}Img`);
+        const casilla = document.querySelector(`[data-fila="${fila}"][data-columna="${columna}"]`);
+        casilla.appendChild(jugadorImg);
+        jugadorImg.style.display = 'block';
+    }
+
+    function calcularNuevaPosicion(totalDados) {
+        // Supongamos que la posición inicial del jugador es 0
+        let nuevaPosicion = posicionActual + totalDados;
+
+        // Manejar si el jugador se pasa del final del tablero
+        if (nuevaPosicion >= numeroCasillas) {
+            // Aquí puedes implementar diferentes reglas, por ejemplo:
+            // - Dar una vuelta completa al tablero
+            // - Obtener una bonificación
+            // - Ir a una casilla especial
+            nuevaPosicion = nuevaPosicion % numeroCasillas; // Para dar una vuelta completa
+        }
+
+        return nuevaPosicion;
+    }
+
+    function actualizarPosicionJugador(nuevaPosicion) {
+        // Obtener la celda correspondiente a la nueva posición
+        const nuevaCelda = obtenerCelda(nuevaPosicion);
+        // Agregar la imagen del jugador a la celda
+        nuevaCelda.appendChild(imagenJugador); // Suponiendo que tienes una variable imagenJugador
+    }
+
+    function obtenerCelda(posicion) {
+        // Supongamos que tienes una matriz llamada 'tablero' que representa tu tablero
+        // y que cada celda tiene un elemento HTML con un ID único (por ejemplo, 'celda-x-y')
+        const fila = Math.floor(posicion / columnas);
+        const columna = posicion % columnas;
+        const idCelda = `celda-${fila}-${columna}`;
+        return document.getElementById(idCelda);
+    }
+    
+    function actualizarPosicionJugador(nuevaPosicion) {
+        // Obtener la nueva celda
+        const nuevaCelda = obtenerCelda(nuevaPosicion);
+
+        // Obtener la imagen del jugador (suponiendo que está almacenada en una variable)
+        const imagenJugador = document.getElementById('imagen-jugador');
+
+        // Remover la imagen de la celda anterior (si existe)
+        imagenJugador.parentNode.removeChild(imagenJugador);
+
+        // Agregar la imagen a la nueva celda
+        nuevaCelda.appendChild(imagenJugador);
+    }
+
+    // Generar el tablero al cargar la página
+    // Ejemplo de uso
+    const celdas = generarTableroNumerado(3); // Ajusta las filas y columnas según tu gusto
+
+</script>
