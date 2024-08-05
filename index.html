@@ -47,13 +47,16 @@
     <div id="tablero"></div>
     <div id="contenedor-dados">
         <div>
-            <span id="dado-1"></span>
+            <span id="dado-1">?</span>
         </div>
         <div>
-            <span id="dado-2"></span>
+            <span id="dado-2">?</span>
         </div>
     </div>
-    <button onclick="tirarDados()">Tirar Dados</button>
+    <button id="btn-turno" data-turno-actual="1" onclick="cambiarDeTurno()">
+        <span id="btn-text__turno-jugador">1</span>
+        Tirar Dados
+    </button>
     <div id="dinero">Dinero: $0</div>
     <div id="jugador1Img">
         <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
@@ -65,19 +68,58 @@
     </div>
 </body>
 </html>
-
 <script>
-    class jugadores{
-        dinero              = 0
-        nombre              = 'juanito'
-        posicionActual      = 0
-        posicionAnterior    = 0
-        imagenJugador       = ''
-        color               = 'black'
+    class Util{
+        getID(id){
+            return document.getElementById(id)
+        }
+        setIdText(id,text){
+            return document.getElementById(id).textContent = text
+        }
+        getDataset(id,atributo){
+            let elemento = document.getElementById(id)
+            
+            if (elemento) {
+                return elemento.dataset[atributo];
+            } else {
+                console.error(`Elemento con ID "${elementoId}" no encontrado.`);
+                return null;
+            }
+        }
+        setDataset(id,atributo,valor){
+            let elemento = document.getElementById(id)
+            
+            if (elemento) {
+                return elemento.dataset[atributo] = valor;
+            } else {
+                console.error(`Elemento con ID "${elementoId}" no encontrado.`);
+                return null;
+            }
+        }
     }
+    let util = new Util()
 </script>
 
 <script id="dev-script-tablero">
+    const motivosAleatorios = [
+        { casilla: 1, motivo: '¡Felicidades! Has ganado un concurso de belleza de perros.', operacion: '+', monto: 500, tipoDinero: 'azul' },
+        { casilla: 2, motivo: 'Tu casa se incendió. ¡Necesitas reconstruirla!', operacion: '-', monto: 1000, tipoDinero: 'rojo' },
+        { casilla: 3, motivo: 'Has encontrado un tesoro enterrado en tu jardín.', operacion: '+', monto: 200, tipoDinero: 'verde' },
+        { casilla: 4, motivo: 'Multa por exceso de velocidad. ¡Pagas la multa!', operacion: '-', monto: 150, tipoDinero: 'azul' },
+        { casilla: 5,  motivo: '¡Heredaste una fortuna de un pariente lejano!', operacion: '+', monto: 5000, tipoDinero: 'oro' },
+        { casilla: 6,  motivo: 'Tu inversión en criptomonedas se desplomó.', operacion: '-', monto: 800, tipoDinero: 'rojo' },
+        { casilla: 7,  motivo: '¡Ganaste la lotería! Pero solo el premio menor.', operacion: '+', monto: 100, tipoDinero: 'azul' },
+        { casilla: 8,  motivo: 'Tu negocio ha tenido pérdidas inesperadas.', operacion: '-', monto: 300, tipoDinero: 'verde' },
+        { casilla: 9,  motivo: '¡Te casaste! ¡Celebra con una gran fiesta!', operacion: '-', monto: 2000, tipoDinero: 'rojo' },
+        { casilla: 10, motivo: 'Encontraste un billete de alta denominación en la calle.', operacion: '+', monto: 500, tipoDinero: 'azul' },
+        { casilla: 11, motivo: 'Un OVNI te secuestró y te devolvió con un regalo extraterrestre: ¡un millón de monedas alienígenas!', operacion: '+', monto: 10000, tipoDinero: 'plata' },
+        { casilla: 12, motivo: 'Tu mascota ganó un concurso de talentos y te dio su premio.', operacion: '+', monto: 300, tipoDinero: 'verde' },
+        { casilla: 13, motivo: 'Te perdiste en la jungla y te comieron los mosquitos. ¡Gastos médicos!', operacion: '-', monto: 400, tipoDinero: 'rojo' },
+        { casilla: 14, motivo: 'Inventaste una nueva máquina del tiempo y la vendiste a un museo.', operacion: '+', monto: 10000, tipoDinero: 'oro' },
+        { casilla: 15, motivo: 'Tu barco pirata fue hundido por una ballena. ¡Perdiste todo tu botín!', operacion: '-', monto: 2000, tipoDinero: 'rojo' },
+        { casilla: 16, motivo: '¡Ganaste un concurso de baile! El premio es un viaje a las Bahamas.', operacion: '-', monto: 1500, tipoDinero: 'rojo' },
+    ];
+
     function generarTableroNumerado(filas) {
         let columnas = filas
         generarTablero(filas, columnas);
@@ -91,7 +133,9 @@
         for (let i = 0; i < filas; i++) {
             html += '<tr>';
             for (let j = 0; j < columnas; j++) {
-                html += `<td>
+
+                html += `<td id="celda-x-${i}-y-${j}">
+                            <div id="motivo-x-${i}-y-${j}"></div>
                             <div id="tablero-x-${i}-y-${j}"></div>
                             <div class="jugador" data-fila="${i}" data-columna="${j}"></div>
                         </td>`;
@@ -102,7 +146,6 @@
         tablero.innerHTML = html;
     }
 
-    // ... resto del código ...
     // Función para generar el tablero
     function numerarBorde(tablero,filas,columnas) {
         let celda
@@ -117,24 +160,25 @@
         //Fila de izquierda
         while(i<filas){
             celda = tablero.querySelector(`#tablero-x-${filas-1-i}-y-0`);
-            i++
             
-            if(celda){
+            if(celda ){
                 celda.textContent = ++numero;
-                celdas.push({numero : `#tablero-x-${filas-1-i}-y-0` })
+                celdas.push({numero: numero, id : `x-${filas-1-i}-y-0` })
             }
+            i++
             
         }
 
         //Columna superior
-        i = 0
+        i = 1
         while(i<filas){
             celda = tablero.querySelector(`#tablero-x-0-y-${i}`);
-            i++
-            if(celda){
+            if(celda ){
+                celda.style='color:green'
                 celda.textContent = ++numero;
-                celdas.push({numero : `#tablero-x-${filas-1-i}-y-0` })
+                celdas.push({numero: numero, id : `x-0-y-${i}` })
             }
+            i++
             
         }
 
@@ -143,29 +187,47 @@
         i = 0
         while(i<filas){
             celda = tablero.querySelector(`#tablero-x-${i+1}-y-${filas-1}`);
-            i++
-            if(celda){
+            if(celda ){
+                celda.style='color:blue'
                 celda.textContent = ++numero;
-                celdas.push({numero : `#tablero-x-${filas-1-i}-y-0` })
+                celdas.push({numero: numero, id : `x-${i+1}-y-${filas-1}` })
             }
+            i++
             
         }
 
-        //Columna superior
-        i = 0
+        //Columna inferior
+        i = 1
         while(i<filas-1){
             celda = tablero.querySelector(`#tablero-x-${columnas-1}-y-${filas-1-i}`);
-            i++
-            if(celda){
+            if(celda ){
+                celda.style='color:red'
                 celda.textContent = ++numero;
-                celdas.push({numero : `#tablero-x-${filas-1-i}-y-${columnas-1}` })
+                celdas.push({numero: numero, id : `x-${columnas-1}-y-${filas-1-i}` })
             }
+            i++
             
         }
 
         return celdas
     }
 
+    function generarMotivoAleatorio(){
+        let motivoAleatorio = Math.floor(Math.random() * motivosAleatorios.length-1) + 1;
+        return motivosAleatorios[motivoAleatorio]
+    }
+
+    function recorerTodoElTablero(celdas){
+        
+        // Constructor de motivos de pagos
+        for (const iterator of celdas) {
+            let motivo = generarMotivoAleatorio()
+            util.setDataset(`motivo-${iterator.id}`,'casilla', motivo.casilla)
+            util.setDataset(`motivo-${iterator.id}`,'monto', motivo.monto)
+            util.setIdText(`motivo-${iterator.id}`, motivo.motivo)
+                       
+        }
+    }
 </script>
 
 <script id="dev-script-dados">
@@ -178,10 +240,12 @@
         // Mostrar los puntos de los dados
         mostrarPuntosDado(dado1, 'dado-1');
         mostrarPuntosDado(dado2, 'dado-2');
-
+/*
         // Actualizar la posición del jugador en el tablero
         const nuevaPosicion = calcularNuevaPosicion(total); // Función para calcular la nueva posición
-        actualizarPosicionJugador(nuevaPosicion);
+        actualizarPosicionJugador(nuevaPosicion);*/
+
+        return total
 
     }
 
@@ -262,5 +326,74 @@
     // Generar el tablero al cargar la página
     // Ejemplo de uso
     const celdas = generarTableroNumerado(3); // Ajusta las filas y columnas según tu gusto
+
+    recorerTodoElTablero(celdas);
+
+</script>
+
+<script id="dev-script-jugadores">
+    class jugadores{
+        dinero              = 0
+        nombre              = 'juanito'
+        posicionActual      = 0
+        posicionAnterior    = 0
+        imagenJugador       = ''
+        color               = 'black'
+
+        tirarDados(){
+            this.posicionAnterior    = this.posicionActual
+            this.posicionActual      = this.posicionAnterior = tirarDados()
+        }
+
+    }
+    let totalJugadores = 2
+    
+    let jugador1 = new jugadores()
+    let jugador2 = new jugadores()
+
+    //jugador1.tirarDados()
+
+    function cambiarDeTurno(){
+        let util = new Util
+        let turno = (util.getDataset('btn-turno','turnoActual'));
+
+        if(turno>totalJugadores){
+            turno = 1
+        }
+
+        console.log('Invoca Turno: '+turno+'/'+totalJugadores)
+
+        switch(turno){
+            case 1:
+                console.log('Turno de jugador: '+1)
+                jugador1.tirarDados()
+            break;
+            case 2:
+                console.log('Turno de jugador: '+2)
+                jugador2.tirarDados()
+            break;
+            case 3:
+                console.log('Turno de jugador: '+3)
+                jugador3.tirarDados()
+            break;
+            case 4:
+                console.log('Turno de jugador: '+4)
+                jugador4.tirarDados()
+            break;
+            default:
+                console.log('Error turno: '+turno)
+                break;
+        }
+
+        console.log(turno)
+        console.log(totalJugadores)
+
+        util.setDataset('btn-turno','turnoActual',++turno)
+        if(turno>totalJugadores){
+            turno = 1
+        }
+        util.setIdText("btn-text__turno-jugador",turno)
+        
+    }
 
 </script>
