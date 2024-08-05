@@ -6,15 +6,9 @@
         imagenJugador       = ''
         color               = 'black'
 
-        tirarDados(){
-            mostrarPuntosDado(7, 'dado-1');
-            mostrarPuntosDado(7, 'dado-2');
-            
+        tirarDados(){         
             this.posicionAnterior    = this.posicionActual
-
-            setTimeout(() => {
-                this.posicionActual      = this.posicionAnterior = tirarDados()
-            }, 3000);
+            this.posicionActual      = this.posicionAnterior = tirarDados()
         }
 
     }
@@ -29,43 +23,28 @@
 
     function cambiarDeTurno(){
         let util = new Util
-        let turno = (util.getDataset('btn-turno','turnoActual'));
+        let turno_actual = (util.getDataset('btn-turno','turnoActual'));
 
-        if(turno>totalJugadores){
-            turno = 1
+        if(turno_actual > totalJugadores){
+            turno_actual = 1
         }
 
-        console.log('Invoca Turno: '+turno+'/'+totalJugadores)
+        console.log('Invoca Turno: '+turno_actual+'/'+totalJugadores)
 
-        switch(turno){
-            case 1:
-                console.log('Turno de jugador: '+1)
-                jugador1.tirarDados()
-            break;
-            case 2:
-                console.log('Turno de jugador: '+2)
-                jugador2.tirarDados()
-            break;
-            case 3:
-                console.log('Turno de jugador: '+3)
-                jugador3.tirarDados()
-            break;
-            case 4:
-                console.log('Turno de jugador: '+4)
-                jugador4.tirarDados()
-            break;
-            default:
-                console.log('Error turno: '+turno)
-                break;
+        try {
+            eval('jugador' + turno_actual).tirarDados();
+        } catch (error) {
+            console.error(error)
         }
 
-        console.log(turno)
+        
+        console.log(turno_actual)
         console.log(totalJugadores)
 
-        util.setDataset('btn-turno','turnoActual',++turno)
-        if(turno>totalJugadores){
-            turno = 1
+        util.setDataset('btn-turno','turnoActual',++turno_actual)
+        if(turno_actual>totalJugadores){
+            turno_actual = 1
         }
-        util.setIdText("btn-text__turno-jugador",turno)
+        util.setIdText("btn-text__turno-jugador",turno_actual)
         
     }
