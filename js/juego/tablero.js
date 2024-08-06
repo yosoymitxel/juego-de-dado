@@ -31,10 +31,13 @@
             html += '<tr>';
             for (let j = 0; j < columnas; j++) {
 
-                html += `<td id="celda-x-${i}-y-${j}" class="tablero-celdas">
-                            <div id="motivo-x-${i}-y-${j}"></div>
-                            <div id="tablero-x-${i}-y-${j}"></div>
-                            <div class="jugador" data-fila="${i}" data-columna="${j}"></div>
+                html += `<td id="celda-x-${i}-y-${j}" class="tablero-celdas ">
+                            <div id="contenedor-datos-celda-x-${i}-y-${j}" class="contenedor-datos-celda">
+                                <div id="numero-x-${i}-y-${j}" class="numero-celda"></div>
+                                <div id="motivo-x-${i}-y-${j}" class="motivo-celda"></div>
+                                <div class="jugador" data-fila="${i}" data-columna="${j}"></div>
+                                <div id="operacion-x-${i}-y-${j}" class="operacion-celda"></div>
+                            </div>
                         </td>`;
             }
             html += '</tr>';
@@ -50,17 +53,20 @@
 
         let numero  = 0;
         let fila    = columna = 0;
+        let idCelda
 
         // Coordenadas
         let i = j = 0
 
         //Fila de izquierda
         while(i<filas){
-            celda = tablero.querySelector(`#tablero-x-${filas-1-i}-y-0`);
+            idCelda = `x-${filas-1-i}-y-0`
+            celda = tablero.querySelector(`#numero-${idCelda}`);
             
             if(celda ){
                 celda.textContent = ++numero;
-                celdas.push({numero: numero, id : `x-${filas-1-i}-y-0` })
+                util.appendClass(`celda-${idCelda}`,'tablero-celda-numerada')
+                celdas.push({numero: numero, id : idCelda })
             }
             i++
             
@@ -69,11 +75,13 @@
         //Columna superior
         i = 1
         while(i<filas){
-            celda = tablero.querySelector(`#tablero-x-0-y-${i}`);
+            idCelda = `x-0-y-${i}`
+            celda = tablero.querySelector(`#numero-${idCelda}`);
             if(celda ){
                 celda.style='color:green'
+                util.appendClass(`celda-${idCelda}`,'tablero-celda-numerada')
                 celda.textContent = ++numero;
-                celdas.push({numero: numero, id : `x-0-y-${i}` })
+                celdas.push({numero: numero, id : idCelda })
             }
             i++
             
@@ -83,11 +91,13 @@
         //Columna superior
         i = 0
         while(i<filas){
-            celda = tablero.querySelector(`#tablero-x-${i+1}-y-${filas-1}`);
+            idCelda = `x-${i+1}-y-${filas-1}`
+            celda = tablero.querySelector(`#numero-${idCelda}`);
             if(celda ){
                 celda.style='color:blue'
+                util.appendClass(`celda-${idCelda}`,'tablero-celda-numerada')
                 celda.textContent = ++numero;
-                celdas.push({numero: numero, id : `x-${i+1}-y-${filas-1}` })
+                celdas.push({numero: numero, id : idCelda })
             }
             i++
             
@@ -96,11 +106,13 @@
         //Columna inferior
         i = 1
         while(i<filas-1){
-            celda = tablero.querySelector(`#tablero-x-${columnas-1}-y-${filas-1-i}`);
+            idCelda = `x-${columnas-1}-y-${filas-1-i}`
+            celda = tablero.querySelector(`#numero-${idCelda}`);
             if(celda ){
                 celda.style='color:red'
+                util.appendClass(`celda-${idCelda}`,'tablero-celda-numerada')
                 celda.textContent = ++numero;
-                celdas.push({numero: numero, id : `x-${columnas-1}-y-${filas-1-i}` })
+                celdas.push({numero: numero, id : idCelda })
             }
             i++
             
@@ -122,6 +134,7 @@
             util.setDataset(`motivo-${iterator.id}`,'casilla', motivo.casilla)
             util.setDataset(`motivo-${iterator.id}`,'monto', motivo.monto)
             util.setIdText(`motivo-${iterator.id}`, motivo.motivo)
+            util.setIdText(`operacion-${iterator.id}`, (motivo.operacion == '+' ? 'Ganó ' : 'Perdió ')+motivo.monto+' de color '+motivo.tipoDinero)
                        
         }
     }

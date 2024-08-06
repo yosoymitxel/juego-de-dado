@@ -19,14 +19,48 @@ function tirarDados() {
         mostrarPuntosDado(dado1, 'dado-1');
         mostrarPuntosDado(dado2, 'dado-2');
     }, 1000);
-   
 
     return total
+}
 
+
+function cambiarDeTurno(){
+    let util = new Util
+    let turno_actual = (util.getDataset('btn-turno','turnoActual'));
+
+    if(turno_actual > totalJugadores){
+        turno_actual = 1
+    }
+
+    console.log('Invoca Turno: '+turno_actual+'/'+totalJugadores)
+
+    try {
+        eval('jugador' + turno_actual).tirarDados();
+    } catch (error) {
+        console.error(error)
+    }
+
+    
+    console.log(turno_actual)
+    console.log(totalJugadores)
+
+    util.setDataset('btn-turno','turnoActual',++turno_actual)
+    if(turno_actual>totalJugadores){
+        turno_actual = 1
+    }
+    util.setIdText("btn-text__turno-jugador",turno_actual)
+
+    for(i=0;i<totalJugadores;i++){
+        console.log('DTETETE')
+        console.log(eval('jugador' + turno_actual).posicionActual)
+        util.setIdText('datos-jugador-'+(i+1),eval('jugador' + turno_actual).posicionActual)
+        //eval('jugador' + turno_actual).tirarDados();
+    }
+    
 }
 
 function mostrarPuntosDado(valor, idDado) {
-    console.log(valor)
+    //console.log(valor)
     const dado = document.getElementById(idDado);
     const patronesPuntos = [
         '●',
@@ -37,7 +71,7 @@ function mostrarPuntosDado(valor, idDado) {
         '● ●</br>● ●</br>● ●',
         '?'
     ];
-    console.log(patronesPuntos)
+    //console.log(patronesPuntos)
     dado.innerHTML = patronesPuntos[valor - 1];
 }
 
