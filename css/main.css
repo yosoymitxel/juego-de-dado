@@ -79,4 +79,31 @@ td {
 
 .jugador-visible{
     display: block !important;
+    position: absolute;
+    margin-top: -94px;
+    margin-left: 56px;
+}
+.ficha{
+    border-radius: 50%;
+    padding: 0 3px;
+    text-shadow: 5px 1px 0 white,
+              -1px -1px 0 white,  
+              1px -1px 0 white,  
+              -1px 1px 0 white;
+}
+
+.ficha.ficha-black{
+    background-color: black;
+}
+
+.ficha.ficha-green{
+    background-color: green;
+}
+
+.ficha.ficha-red{
+    background-color: red;
+}
+
+.ficha.ficha-blue{
+    background-color: blue;
 }

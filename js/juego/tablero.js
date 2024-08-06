@@ -160,3 +160,16 @@
         }
         return document.getElementById('celda-'+idCelda);
     }
+
+    function obtenerCeldaNumero(id){
+        const totalCeldas = celdas.length
+        console.log(id+'/'+totalCeldas)
+
+        if( totalCeldas > id ){
+            idCelda = (celdas[id-1]).numero
+        }else{
+            return obtenerCeldaNumero(id-totalCeldas)
+        }
+        return idCelda;
+    }
+    

@@ -15,7 +15,7 @@
 
         tirarDados(){         
             this.posicionAnterior    = this.posicionActual
-            this.posicionActual      = this.posicionAnterior + tirarDados()
+            this.posicionActual      = obtenerCeldaNumero(this.posicionAnterior + tirarDados())
             this.actualizarPosicionJugador()
         }
 
@@ -51,8 +51,9 @@
             // Agregar la imagen a la nueva celda
             nuevaCelda.appendChild(imagenJugador);
             console.log(obtenerCeldaId(this.posicionActual))
-            console.log('text-'+this.color+' jugador-visible')
-            util.appendClass('imagen-jugador-'+this.id,('text-'+this.color))
+            console.log('ficha-'+this.color+' jugador-visible')
+            util.appendClass('imagen-jugador-'+this.id,('ficha'))
+            util.appendClass('imagen-jugador-'+this.id,('ficha-'+this.color))
             util.appendClass('imagen-jugador-'+this.id,('jugador-visible'))
 
         }
