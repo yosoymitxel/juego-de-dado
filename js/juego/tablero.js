@@ -138,3 +138,25 @@
                        
         }
     }
+
+    function obtenerCeldaId(id){
+        const totalCeldas = celdas.length
+        console.log(id+'/'+totalCeldas)
+        if( totalCeldas > id ){
+            idCelda = (celdas[id-1]).id
+        }else{
+            return obtenerCeldaId(id-totalCeldas)
+        }
+        return 'celda-'+idCelda;
+    }
+
+    function obtenerCelda(id){
+        const totalCeldas = celdas.length
+        console.log(id+'/'+totalCeldas)
+        if( totalCeldas > id  ){
+            idCelda = (celdas[id-1]).id
+        }else{
+            return obtenerCelda(id-totalCeldas)
+        }
+        return document.getElementById('celda-'+idCelda);
+    }

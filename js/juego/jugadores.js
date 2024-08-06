@@ -1,4 +1,5 @@
     class jugadores{
+        id                  = 0
         dinero              = 0
         nombre              = 'juanito'
         posicionActual      = 0
@@ -6,39 +7,54 @@
         imagenJugador       = ''
         color               = 'black'
 
-        tirarDados(){         
-            this.posicionAnterior    = this.posicionActual
-            this.posicionActual      = this.posicionAnterior = tirarDados()
+        constructor(id,nombre='juanito',color="black"){
+            this.id             =   id
+            this.nombre         = nombre
+            this.color          = color
         }
 
-    }
+        tirarDados(){         
+            this.posicionAnterior    = this.posicionActual
+            this.posicionActual      = this.posicionAnterior + tirarDados()
+            this.actualizarPosicionJugador()
+        }
 
-    //jugador1.tirarDados()
-
-function cambiarDeTurno(){
-    let util = new Util
-    let turno_actual = (util.getDataset('btn-turno','turnoActual'));
-
-    if(turno_actual > totalJugadores){
-        turno_actual = 1
-    }
-
-    console.log('Invoca Turno: '+turno_actual+'/'+totalJugadores)
-
-    try {
-        eval('jugador' + turno_actual).tirarDados();
-    } catch (error) {
-        console.error(error)
-    }
-
+        actualizarPosicionJugador() {
+            // Obtener la nueva celda
+            const nuevaCelda = obtenerCelda(this.posicionActual);
     
-    console.log(turno_actual)
-    console.log(totalJugadores)
+            console.log(nuevaCelda)
 
-    util.setDataset('btn-turno','turnoActual',++turno_actual)
-    if(turno_actual>totalJugadores){
-        turno_actual = 1
-    }
-    util.setIdText("btn-text__turno-jugador",turno_actual)
+            // Obtener la imagen del jugador (suponiendo que está almacenada en una variable)
+            var imagenOriginal = document.getElementById('imagen-jugador');
+            
+            try {
+                document.getElementById('imagen-jugador-' + this.id).remove();
+            } catch (error) {
+                console.error(error)
+            }
+
+            try {
+                var imagenJugador = imagenOriginal.cloneNode(true); // Clona el nodo y sus hijos
+                imagenJugador.id  = 'imagen-jugador-' + this.id
+                console.log(imagenJugador.id)
+
+            } catch (error) {
+                console.error(error)
+            }
+           
+
+
+            // Remover la imagen de la celda anterior (si existe)
+            //imagenJugador.parentNode.removeChild(document.getElementById('imagen-jugador-' + this.id));
     
-}
+            // Agregar la imagen a la nueva celda
+            nuevaCelda.appendChild(imagenJugador);
+            console.log(obtenerCeldaId(this.posicionActual))
+            console.log('text-'+this.color+' jugador-visible')
+            util.appendClass('imagen-jugador-'+this.id,('text-'+this.color))
+            util.appendClass('imagen-jugador-'+this.id,('jugador-visible'))
+
+        }
+    }
+

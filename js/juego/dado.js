@@ -4,8 +4,8 @@ function numeroAleatorio(rango = 6){
 
 function tirarDados() {
     // Lógica para simular la tirada de dados
-    const dado1 = Math.floor(Math.random() * 6) + 1;
-    const dado2 = Math.floor(Math.random() * 6) + 1;
+    const dado1 = numeroAleatorio(6)
+    const dado2 = numeroAleatorio(6)
     const total = dado1 + dado2;
 
     mostrarPuntosDado(7, 'dado-1');
@@ -41,8 +41,8 @@ function cambiarDeTurno(){
     }
 
     
-    console.log(turno_actual)
-    console.log(totalJugadores)
+   /*  console.log(turno_actual)
+    console.log(totalJugadores) */
 
     util.setDataset('btn-turno','turnoActual',++turno_actual)
     if(turno_actual>totalJugadores){
@@ -51,10 +51,7 @@ function cambiarDeTurno(){
     util.setIdText("btn-text__turno-jugador",turno_actual)
 
     for(i=0;i<totalJugadores;i++){
-        console.log('DTETETE')
-        console.log(eval('jugador' + turno_actual).posicionActual)
-        util.setIdText('datos-jugador-'+(i+1),eval('jugador' + turno_actual).posicionActual)
-        //eval('jugador' + turno_actual).tirarDados();
+        util.setIdText('datos-jugador-'+(i+1),eval('jugador' + (i+1)).posicionActual)
     }
     
 }
