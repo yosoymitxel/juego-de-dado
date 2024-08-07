@@ -5,6 +5,9 @@ class Util{
     setIdText(id,text){
         return document.getElementById(id).textContent = text
     }
+    setIdHtml(id,html){
+        return document.getElementById(id).innerHTML = html
+    }
     getDataset(id,atributo){
         let elemento = document.getElementById(id)
         

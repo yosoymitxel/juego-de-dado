@@ -43,7 +43,14 @@
                 console.error(error)
             }
            
+            const intervalId = setInterval(cambiarCelda, 10);
 
+            // Mostrar los puntos de los dados
+            setTimeout(() => {
+                clearInterval(intervalId);
+                mostrarPuntosDado(dado1, 'dado-1');
+                mostrarPuntosDado(dado2, 'dado-2');
+            }, 1000);
 
             // Remover la imagen de la celda anterior (si existe)
             //imagenJugador.parentNode.removeChild(document.getElementById('imagen-jugador-' + this.id));
@@ -59,3 +66,7 @@
         }
     }
 
+
+    function cambiarCelda(){
+        
+    }

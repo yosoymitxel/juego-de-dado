@@ -142,7 +142,7 @@
     function obtenerCeldaId(id){
         const totalCeldas = celdas.length
         console.log(id+'/'+totalCeldas)
-        if( totalCeldas > id ){
+        if( totalCeldas >= id ){
             idCelda = (celdas[id-1]).id
         }else{
             return obtenerCeldaId(id-totalCeldas)
@@ -153,7 +153,7 @@
     function obtenerCelda(id){
         const totalCeldas = celdas.length
         console.log(id+'/'+totalCeldas)
-        if( totalCeldas > id  ){
+        if( totalCeldas >= id  ){
             idCelda = (celdas[id-1]).id
         }else{
             return obtenerCelda(id-totalCeldas)
@@ -165,7 +165,7 @@
         const totalCeldas = celdas.length
         console.log(id+'/'+totalCeldas)
 
-        if( totalCeldas > id ){
+        if( totalCeldas >= id ){
             idCelda = (celdas[id-1]).numero
         }else{
             return obtenerCeldaNumero(id-totalCeldas)

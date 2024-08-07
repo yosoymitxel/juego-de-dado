@@ -51,7 +51,19 @@ function cambiarDeTurno(){
     util.setIdText("btn-text__turno-jugador",turno_actual)
 
     for(i=0;i<totalJugadores;i++){
-        util.setIdText('datos-jugador-'+(i+1),eval('jugador' + (i+1)).posicionActual)
+        util.setIdHtml('datos-jugador-'+(i+1),
+            `<div id="datos-jugador_detalles" class="jugador-color-${eval('jugador' + (i+1)).color} ">
+                <div id="dato-jugador_nombre-${(i+1)}">
+                    ${eval('jugador' + (i+1)).nombre} 
+                </div>
+                <div id="dato-jugador_posicion-${(i+1)}">
+                    ${eval('jugador' + (i+1)).posicionActual} 
+                </div>
+                <div id="dato-jugador_dinero-${(i+1)}">
+                    ${eval('jugador' + (i+1)).dinero} 
+                </div>
+            </div>`
+        )
     }
     
 }
